@@ -1,0 +1,18 @@
+<launch>
+  <!-- 加载地图 -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find frp_1100309_description)/maps/mapfrp_1100309.yaml" />
+
+  <!-- 启动AMCL节点 -->
+  <node name="amcl" pkg="amcl" type="amcl">
+    <param name="odom_frame_id" value="odom" />
+    <param name="base_frame_id" value="base_link" />
+  </node>
+
+  <!-- 启动move_base节点 -->
+  <node name="move_base" pkg="move_base" type="move_base" output="screen">
+    <rosparam file="$(find frp_1100309_description)/params/move_base_params.yaml" command="load" />
+  </node>
+
+  <!-- 启动RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find frp_1100309_description)/launch/urdf.rviz" required="true" />
+</launch>

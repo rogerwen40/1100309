@@ -1,0 +1,27 @@
+<launch>
+  <!-- 加載自定義迷宮世界 -->
+  <arg name="world_name" default="$(find frp_1100309_description)/worlds/frp1.world"/>
+
+  <!-- 加載Gazebo世界 -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- 加載自定義機器人描述文件 -->
+  <param name="robot_description" command="$(find xacro)/xacro $(find frp_1100309_description)/urdf/frp_1100309.xacro"/>
+
+  <!-- 在Gazebo中生成自定義機器人模型 -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model frp_1100309"/>
+
+  <!-- 配置ROS控制器 -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="joint_state_controller differential_drive_controller" />
+
+  <param name="use_sim_time" value="true"/> <!-- 確保使用模擬時間 -->
+</launch>
+
